@@ -1,0 +1,15 @@
+#!/bin/bash
+
+for f in ${HTTPD_PREINIT_SCRIPTS_PATH}/*.sh; do echo "---> $f"; sh "$f"; done
+
+
+for f in ${HTTPD_PREINIT_SCRIPTS_PATH}/extras/*.sh; do 
+    if [ -e "$f" ]; then
+        echo "---> $f"; sh "$f"
+    else
+        echo "No additional .sh files found in ${HTTPD_PREINIT_SCRIPTS_PATH}/extras directory"
+        break
+    fi
+done
+
+exec httpd -d ${HTTPD_SERVER_ROOT_PATH} -D FOREGROUND $@
