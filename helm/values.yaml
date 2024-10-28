@@ -1,0 +1,50 @@
+image:
+  repository: quay.io/rgordill/httpd-micro
+  tag: "2.24-0"
+
+# fullnameOverride: apache-httpd
+
+storage:
+  size: 1Gi
+  storageClass: ocs-storagecluster-cephfs
+
+service:
+  port: 443
+
+domain: apps.ocp.sa-iberia.lab.eng.brq2.redhat.com
+
+resources: 
+  requests:
+    cpu: 1
+    memory: 512Mi
+  limits:
+    cpu: 1
+    memory: 512Mi
+
+replicas: 1
+
+ingress:
+  enabled: true
+
+git:
+  url: https://github.com/sclorg/httpd-ex.git
+  branch: master
+
+affinity: {}
+
+monitor:
+  enabled: true
+  image: 
+    repository: quay.io/lusitaniae/apache-exporter
+    tag: latest
+
+logging: json
+
+certManager:
+  enabled: true
+  issuerRef:
+    kind: ClusterIssuer
+    name: lab-ca-issuer 
+#     kind: Issuer
+
+extraConfigMaps: []

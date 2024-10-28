@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    {{- include "httpd.selectorLabels" . | nindent 4 }}
+  name: {{ include "httpd.fullname" . }}-content-sync
+spec:
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - env:
+            - name: REPO_URL
+              value: {{ .Values.git.url }}
+            - name: REPO_BRANCH
+              value: {{ .Values.git.branch }}
+            name: git-download
+            image: registry.redhat.io/ubi9/toolbox
+            # TODO: iterate through all the scripts in the configmap
+            command: 
+            - '/tmp/sync-scripts/90-sync-git.sh'
+            volumeMounts:
+            - mountPath: /tmp/sync-scripts
+              name: {{ include "httpd.fullname" . }}-sync
+            - mountPath: /var/www/html
+              name: {{ include "httpd.fullname" . }}-data
+          volumes:
+          - name: {{ include "httpd.fullname" . }}-data
+            persistentVolumeClaim:
+              claimName: {{ include "httpd.fullname" . }}-data
+          - name: {{ include "httpd.fullname" . }}-sync
+            configMap:
+              defaultMode: 0755
+              name: {{ include "httpd.fullname" . }}-sync
+          restartPolicy: Never
+      ttlSecondsAfterFinished: 10
+# Every 15 mins it will sync the content
+  schedule: "3/15 * * * *"
+  successfulJobsHistoryLimit: 1
+  suspend: false
+
