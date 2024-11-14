@@ -12,7 +12,7 @@ ARG DNF_INSTALL_ROOT="/mnt/rootfs"
 ARG DNF_OPTS="--setopt install_weak_deps=false --nodocs"
 ARG DNF_OPTS_ROOT="-y --installroot ${DNF_INSTALL_ROOT}"
 
-ARG PACKAGES="httpd-core mod_ssl redhat-logos-httpd"
+ARG PACKAGES="httpd-core mod_ssl"
 
 RUN mkdir -p ${DNF_INSTALL_ROOT}
 COPY --from=target / ${DNF_INSTALL_ROOT}/
@@ -25,7 +25,7 @@ FROM scratch
 # Apache HTTP Server image.
 #
 # Volumes:
-#  * /var/www/html - Datastore for httpd
+#  * /var/www - Datastore for httpd
 
 ARG DNF_INSTALL_ROOT="/mnt/rootfs"
 
@@ -50,10 +50,9 @@ LABEL source="https://github.com/rgordill/httpd-on-openshift" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
       io.k8s.display-name="Apache httpd $HTTPD_VERSION" \
-      io.openshift.expose-services="8080:http,8443:https" \
+      io.openshift.expose-services="8443:https" \
       io.openshift.tags="httpd,httpd-$HTTPD_SHORT_VERSION"
 
-EXPOSE 8080
 EXPOSE 8443
 
 COPY --from=build ${DNF_INSTALL_ROOT}/ /
