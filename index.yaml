@@ -1,0 +1,20 @@
+apiVersion: v1
+entries:
+  httpd:
+  - annotations:
+      charts.openshift.io/name: Apache HTTP Server (httpd)
+      charts.openshift.io/provider: Community
+      charts.openshift.io/providerType: Community
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2024-11-22T17:29:27.329976445Z"
+    description: A Helm chart for Apache Web Server on OpenShift
+    digest: c2566d54f52c0eb1583e8f0a2fbc7dc9d39ad81efef69ff997f3c83462c20c4a
+    kubeVersion: '>=1.20.0'
+    name: httpd
+    sources:
+    - https://github.com/TBD
+    urls:
+    - https://github.com/rgordill/httpd-on-openshift/releases/download/httpd-0.0.1/httpd-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-11-22T17:29:27.329981655Z"
