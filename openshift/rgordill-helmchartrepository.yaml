@@ -1,0 +1,8 @@
+apiVersion: helm.openshift.io/v1beta1
+kind: HelmChartRepository
+metadata:
+  name: rgordill-helm-charts
+spec:
+  connectionConfig:
+    url: https://rgordill.github.io/httpd-on-openshift/
+  name: Ramon Gordillo's Helm Charts
