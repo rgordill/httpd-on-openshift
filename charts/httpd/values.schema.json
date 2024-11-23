@@ -12,10 +12,11 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {
-          "default": "true",
+          "default": true,
           "description": "Enabling cert-manager Certs creation",
           "required": [],
-          "title": "enabled"
+          "title": "enabled",
+          "type": "boolean"
         },
         "issuerRef": {
           "additionalProperties": false,
@@ -43,6 +44,7 @@
         }
       },
       "required": [
+        "enabled",
         "issuerRef"
       ],
       "title": "certManager",
@@ -52,16 +54,8 @@
       "default": "apps.ocp.sa-iberia.lab.eng.brq2.redhat.com",
       "description": "default domain for ingress controller",
       "required": [],
-      "title": "domain"
-    },
-    "extraConfigMaps": {
-      "description": "TODO: extraConfigMaps to inject to http server",
-      "items": {
-        "required": []
-      },
-      "required": [],
-      "title": "extraConfigMaps",
-      "type": "array"
+      "title": "domain",
+      "type": "string"
     },
     "fullnameOverride": {
       "additionalProperties": false,
@@ -76,16 +70,21 @@
           "default": "master",
           "description": "Git branch with content",
           "required": [],
-          "title": "branch"
+          "title": "branch",
+          "type": "string"
         },
         "url": {
           "default": "https://github.com/sclorg/httpd-ex.git",
           "description": "Git URL with content",
           "required": [],
-          "title": "url"
+          "title": "url",
+          "type": "string"
         }
       },
-      "required": [],
+      "required": [
+        "url",
+        "branch"
+      ],
       "title": "git",
       "type": "object"
     },
@@ -97,18 +96,17 @@
     },
     "image": {
       "additionalProperties": false,
-      "description": "Image repository and tag for Apache http server",
       "properties": {
         "repository": {
           "default": "quay.io/rgordill/httpd-micro",
-          "description": "Repository",
+          "description": "Repository for Apache http server",
           "required": [],
           "title": "repository",
           "type": "string"
         },
         "tag": {
           "default": "2.24-0",
-          "description": "Tag",
+          "description": "Tag for Apache http server",
           "required": [],
           "title": "tag",
           "type": "string"
@@ -125,13 +123,16 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {
-          "default": "true",
+          "default": true,
           "description": "Expose http outside the cluster",
           "required": [],
-          "title": "enabled"
+          "title": "enabled",
+          "type": "boolean"
         }
       },
-      "required": [],
+      "required": [
+        "enabled"
+      ],
       "title": "ingress",
       "type": "object"
     },
@@ -149,22 +150,25 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {
-          "default": "true",
+          "default": true,
           "description": "Monitoring enabled",
           "required": [],
-          "title": "enabled"
+          "title": "enabled",
+          "type": "boolean"
         },
         "image": {
           "additionalProperties": false,
           "properties": {
             "repository": {
               "default": "quay.io/lusitaniae/apache-exporter",
+              "description": "Monitoring image",
               "required": [],
               "title": "repository",
               "type": "string"
             },
             "tag": {
               "default": "latest",
+              "description": "Monitoring tag",
               "required": [],
               "title": "tag",
               "type": "string"
@@ -179,16 +183,18 @@
         }
       },
       "required": [
+        "enabled",
         "image"
       ],
       "title": "monitor",
       "type": "object"
     },
     "replicas": {
-      "default": "1",
+      "default": 1,
       "description": "Number of replicas",
       "required": [],
-      "title": "replicas"
+      "title": "replicas",
+      "type": "integer"
     },
     "resources": {
       "additionalProperties": false,
@@ -198,69 +204,80 @@
           "additionalProperties": false,
           "properties": {
             "cpu": {
-              "default": "1",
+              "default": 1,
               "description": "CPU limits",
               "required": [],
-              "title": "cpu"
+              "title": "cpu",
+              "type": "integer"
             },
             "memory": {
               "default": "512Mi",
               "description": "Memory limits",
               "required": [],
               "title": "memory",
-              "form": true,
-              "render": "slider",
-              "sliderMax": 2048,
-              "sliderMin": 128,
-              "sliderUnit": "Mi"
+              "x-form": true,
+              "x-render": "slider",
+              "x-sliderMax": 2048,
+              "x-sliderMin": 128,
+              "x-sliderUnit": "Mi"
             }
           },
-          "required": [],
+          "required": [
+            "cpu"
+          ],
           "title": "limits",
           "type": "object"
         },
         "requests": {
           "additionalProperties": false,
-          "description": "CPU and memory Requests",
           "properties": {
             "cpu": {
-              "default": "1",
+              "default": 1,
               "description": "CPU requests",
               "required": [],
-              "title": "cpu"
+              "title": "cpu",
+              "type": "integer"
             },
             "memory": {
               "default": "512Mi",
               "description": "Memory requests",
               "required": [],
               "title": "memory",
-              "form": true,
-              "render": "slider",
-              "sliderMax": 2048,
-              "sliderMin": 128,
-              "sliderUnit": "Mi"
+              "x-form": true,
+              "x-render": "slider",
+              "x-sliderMax": 2048,
+              "x-sliderMin": 128,
+              "x-sliderUnit": "Mi"
             }
           },
-          "required": [],
-          "title": "requests"
+          "required": [
+            "cpu"
+          ],
+          "title": "requests",
+          "type": "object"
         }
       },
       "required": [
+        "requests",
         "limits"
       ],
-      "title": "resources"
+      "title": "resources",
+      "type": "object"
     },
     "service": {
       "additionalProperties": false,
       "properties": {
         "port": {
-          "default": "443",
+          "default": 443,
           "description": "Service port number to expose httpd internally",
           "required": [],
-          "title": "port"
+          "title": "port",
+          "type": "integer"
         }
       },
-      "required": [],
+      "required": [
+        "port"
+      ],
       "title": "service",
       "type": "object"
     },
@@ -273,20 +290,23 @@
           "description": "Volume Size",
           "required": [],
           "title": "size",
-          "form": true,
-          "render": "slider",
-          "sliderMax": 2048,
-          "sliderMin": 1,
-          "sliderUnit": "Gi"
+          "x-form": true,
+          "x-render": "slider",
+          "x-sliderMax": 2048,
+          "x-sliderMin": 1,
+          "x-sliderUnit": "Gi"
         },
         "storageClass": {
           "default": "ocs-storagecluster-cephfs",
           "description": "The RWX-capable StorageClass to provision the volume.",
           "required": [],
-          "title": "storageClass"
+          "title": "storageClass",
+          "type": "string"
         }
       },
-      "required": [],
+      "required": [
+        "storageClass"
+      ],
       "title": "storage",
       "type": "object"
     }
@@ -295,11 +315,13 @@
     "image",
     "storage",
     "service",
+    "domain",
+    "resources",
+    "replicas",
     "ingress",
     "git",
     "monitor",
-    "certManager",
-    "extraConfigMaps"
+    "certManager"
   ],
   "type": "object"
 }

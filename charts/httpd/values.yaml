@@ -37,9 +37,7 @@ domain: apps.ocp.sa-iberia.lab.eng.brq2.redhat.com
 # CPU and memory resources for the pod
 resources: 
   requests:
-# @schema
 # -- CPU requests
-# @schema
     cpu: 1
 # @schema
 # x-form: true
@@ -85,7 +83,6 @@ affinity: {}
 monitor:
 # -- Monitoring enabled
   enabled: true
-# Monitoring image
   image: 
 # -- Monitoring image
     repository: quay.io/lusitaniae/apache-exporter
@@ -105,16 +102,16 @@ certManager:
   enabled: true
   issuerRef:
 # @schema
-# -- Kind of Issuer
 # enum:
 # - Issuer
 # - ClusterIssuer
 # @schema
+# -- Kind of Issuer
     kind: ClusterIssuer
 # @schema
-# -- IssuerName
 # default: ""
 # @schema
+# -- IssuerName
     name: lab-ca-issuer 
 
 # TODO: extraConfigMaps to inject to http server
