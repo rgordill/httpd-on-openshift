@@ -5,4 +5,4 @@ metadata:
 spec:
   connectionConfig:
     url: https://rgordill.github.io/httpd-on-openshift/
-  name: Ramon Gordillo's Helm Charts
+  name: Iberia SA's Helm Charts

@@ -215,11 +215,11 @@
               "description": "Memory limits",
               "required": [],
               "title": "memory",
-              "x-form": true,
-              "x-render": "slider",
-              "x-sliderMax": 2048,
-              "x-sliderMin": 128,
-              "x-sliderUnit": "Mi"
+              "form": true,
+              "render": "slider",
+              "sliderMax": 2048,
+              "sliderMin": 128,
+              "sliderUnit": "Mi"
             }
           },
           "required": [
@@ -243,11 +243,11 @@
               "description": "Memory requests",
               "required": [],
               "title": "memory",
-              "x-form": true,
-              "x-render": "slider",
-              "x-sliderMax": 2048,
-              "x-sliderMin": 128,
-              "x-sliderUnit": "Mi"
+              "form": true,
+              "render": "slider",
+              "sliderMax": 2048,
+              "sliderMin": 128,
+              "sliderUnit": "Mi"
             }
           },
           "required": [
@@ -290,11 +290,11 @@
           "description": "Volume Size",
           "required": [],
           "title": "size",
-          "x-form": true,
-          "x-render": "slider",
-          "x-sliderMax": 2048,
-          "x-sliderMin": 1,
-          "x-sliderUnit": "Gi"
+          "form": true,
+          "render": "slider",
+          "sliderMax": 2048,
+          "sliderMin": 1,
+          "sliderUnit": "Gi"
         },
         "storageClass": {
           "default": "ocs-storagecluster-cephfs",
