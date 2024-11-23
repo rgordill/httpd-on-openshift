@@ -9,4 +9,4 @@ annotations:
 apiVersion: v2
 appVersion: 0.0.1
 sources:
-  - https://github.com/TBD
+  - https://github.com/rgordill/httpd-on-openshift/charts/httpd

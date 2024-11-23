@@ -55,6 +55,7 @@
       "title": "domain"
     },
     "extraConfigMaps": {
+      "description": "TODO: extraConfigMaps to inject to http server",
       "items": {
         "required": []
       },
@@ -96,21 +97,27 @@
     },
     "image": {
       "additionalProperties": false,
+      "description": "Image repository and tag for Apache http server",
       "properties": {
         "repository": {
           "default": "quay.io/rgordill/httpd-micro",
-          "description": "The container image repository for Apache http server",
+          "description": "Repository",
           "required": [],
-          "title": "repository"
+          "title": "repository",
+          "type": "string"
         },
         "tag": {
           "default": "2.24-0",
-          "description": "The container image tag for Apache http server",
+          "description": "Tag",
           "required": [],
-          "title": "tag"
+          "title": "tag",
+          "type": "string"
         }
       },
-      "required": [],
+      "required": [
+        "repository",
+        "tag"
+      ],
       "title": "image",
       "type": "object"
     },
@@ -201,11 +208,11 @@
               "description": "Memory limits",
               "required": [],
               "title": "memory",
-              "x-form": true,
-              "x-render": "slider",
-              "x-sliderMax": 2048,
-              "x-sliderMin": 128,
-              "x-sliderUnit": "Mi"
+              "form": true,
+              "render": "slider",
+              "sliderMax": 2048,
+              "sliderMin": 128,
+              "sliderUnit": "Mi"
             }
           },
           "required": [],
@@ -227,11 +234,11 @@
               "description": "Memory requests",
               "required": [],
               "title": "memory",
-              "x-form": true,
-              "x-render": "slider",
-              "x-sliderMax": 2048,
-              "x-sliderMin": 128,
-              "x-sliderUnit": "Mi"
+              "form": true,
+              "render": "slider",
+              "sliderMax": 2048,
+              "sliderMin": 128,
+              "sliderUnit": "Mi"
             }
           },
           "required": [],
@@ -259,17 +266,18 @@
     },
     "storage": {
       "additionalProperties": false,
+      "description": "Storage",
       "properties": {
         "size": {
           "default": "1Gi",
           "description": "Volume Size",
           "required": [],
           "title": "size",
-          "x-form": true,
-          "x-render": "slider",
-          "x-sliderMax": 2048,
-          "x-sliderMin": 1,
-          "x-sliderUnit": "Gi"
+          "form": true,
+          "render": "slider",
+          "sliderMax": 2048,
+          "sliderMin": 1,
+          "sliderUnit": "Gi"
         },
         "storageClass": {
           "default": "ocs-storagecluster-cephfs",
