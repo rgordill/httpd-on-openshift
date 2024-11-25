@@ -10,6 +10,7 @@
     },
     "certManager": {
       "additionalProperties": false,
+      "description": "Cert Manager config if used",
       "properties": {
         "enabled": {
           "default": true,
@@ -20,6 +21,7 @@
         },
         "issuerRef": {
           "additionalProperties": false,
+          "description": "Issuer Reference",
           "properties": {
             "kind": {
               "default": "ClusterIssuer",
@@ -65,6 +67,7 @@
     },
     "git": {
       "additionalProperties": false,
+      "description": "Repo with the content to serve",
       "properties": {
         "branch": {
           "default": "master",
@@ -121,6 +124,7 @@
     },
     "ingress": {
       "additionalProperties": false,
+      "description": "Ingress to expose the server",
       "properties": {
         "enabled": {
           "default": true,
@@ -215,21 +219,19 @@
               "description": "Memory limits",
               "required": [],
               "title": "memory",
-              "form": true,
-              "render": "slider",
-              "sliderMax": 2048,
-              "sliderMin": 128,
-              "sliderUnit": "Mi"
+              "type": "string"
             }
           },
           "required": [
-            "cpu"
+            "cpu",
+            "memory"
           ],
           "title": "limits",
           "type": "object"
         },
         "requests": {
           "additionalProperties": false,
+          "description": "Requests",
           "properties": {
             "cpu": {
               "default": 1,
@@ -243,15 +245,12 @@
               "description": "Memory requests",
               "required": [],
               "title": "memory",
-              "form": true,
-              "render": "slider",
-              "sliderMax": 2048,
-              "sliderMin": 128,
-              "sliderUnit": "Mi"
+              "type": "string"
             }
           },
           "required": [
-            "cpu"
+            "cpu",
+            "memory"
           ],
           "title": "requests",
           "type": "object"
@@ -266,6 +265,7 @@
     },
     "service": {
       "additionalProperties": false,
+      "description": "Internal Service that exposes the server",
       "properties": {
         "port": {
           "default": 443,
@@ -290,11 +290,7 @@
           "description": "Volume Size",
           "required": [],
           "title": "size",
-          "form": true,
-          "render": "slider",
-          "sliderMax": 2048,
-          "sliderMin": 1,
-          "sliderUnit": "Gi"
+          "type": "string"
         },
         "storageClass": {
           "default": "ocs-storagecluster-cephfs",
@@ -305,6 +301,7 @@
         }
       },
       "required": [
+        "size",
         "storageClass"
       ],
       "title": "storage",

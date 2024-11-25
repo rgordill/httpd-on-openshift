@@ -15,18 +15,12 @@ fullnameOverride: {}
 
 # Storage
 storage:
-# @schema
-# x-form: true
-# x-render: slider
-# x-sliderMin: 1
-# x-sliderMax: 2048
-# x-sliderUnit: Gi
-# @schema
 # -- Volume Size
   size: 1Gi
 # -- The RWX-capable StorageClass to provision the volume.
   storageClass: ocs-storagecluster-cephfs
 
+# Internal Service that exposes the server
 service:
 # -- Service port number to expose httpd internally
   port: 443
@@ -36,38 +30,28 @@ domain: apps.ocp.sa-iberia.lab.eng.brq2.redhat.com
 
 # CPU and memory resources for the pod
 resources: 
+# Requests
   requests:
 # -- CPU requests
     cpu: 1
-# @schema
-# x-form: true
-# x-render: slider
-# x-sliderMin: 128
-# x-sliderMax: 2048
-# x-sliderUnit: Mi
-# @schema
 # -- Memory requests
     memory: 512Mi
+# Limits
   limits:
 # -- CPU limits
     cpu: 1
-# @schema
-# x-form: true
-# x-render: slider
-# x-sliderMin: 128
-# x-sliderMax: 2048
-# x-sliderUnit: Mi
-# @schema
 # -- Memory limits
     memory: 512Mi
 
 # -- Number of replicas
 replicas: 1
 
+# Ingress to expose the server
 ingress:
 # -- Expose http outside the cluster
   enabled: true
 
+# Repo with the content to serve
 git:
 # -- Git URL with content
   url: https://github.com/sclorg/httpd-ex.git
@@ -97,9 +81,11 @@ monitor:
 # -- Logging format
 logging: json
 
+# Cert Manager config if used
 certManager:
 # -- Enabling cert-manager Certs creation
   enabled: true
+# Issuer Reference
   issuerRef:
 # @schema
 # enum:
