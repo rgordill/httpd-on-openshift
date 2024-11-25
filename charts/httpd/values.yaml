@@ -2,9 +2,9 @@
 # yaml-language-server: $schema=values.schema.json
 
 image:
-# -- Repository for Apache http server
+  # -- Repository for Apache http server
   repository: quay.io/rgordill/httpd-micro
-# -- Tag for Apache http server
+  # -- Tag for Apache http server
   tag: "2.24-0"
 
 # @schema
@@ -15,14 +15,14 @@ fullnameOverride: {}
 
 # Storage
 storage:
-# -- Volume Size
+  # -- Volume Size
   size: 1Gi
-# -- The RWX-capable StorageClass to provision the volume.
+  # -- The RWX-capable StorageClass to provision the volume.
   storageClass: ocs-storagecluster-cephfs
 
 # Internal Service that exposes the server
 service:
-# -- Service port number to expose httpd internally
+  # -- Service port number to expose httpd internally
   port: 443
 
 # -- default domain for ingress controller
@@ -30,17 +30,17 @@ domain: apps.ocp.sa-iberia.lab.eng.brq2.redhat.com
 
 # CPU and memory resources for the pod
 resources: 
-# Requests
+  # Requests
   requests:
-# -- CPU requests
+    # -- CPU requests
     cpu: 1
-# -- Memory requests
+    # -- Memory requests
     memory: 512Mi
-# Limits
+  # Limits
   limits:
-# -- CPU limits
+    # -- CPU limits
     cpu: 1
-# -- Memory limits
+    # -- Memory limits
     memory: 512Mi
 
 # -- Number of replicas
@@ -48,14 +48,14 @@ replicas: 1
 
 # Ingress to expose the server
 ingress:
-# -- Expose http outside the cluster
+  # -- Expose http outside the cluster
   enabled: true
 
 # Repo with the content to serve
 git:
-# -- Git URL with content
+  # -- Git URL with content
   url: https://github.com/sclorg/httpd-ex.git
-# -- Git branch with content
+  # -- Git branch with content
   branch: master
 
 # @schema
@@ -64,13 +64,15 @@ git:
 # -- Affinity definition
 affinity: {}
 
+# Monitoring configuration for prometheus
 monitor:
-# -- Monitoring enabled
+  # -- Monitoring enabled
   enabled: true
+  # Image config
   image: 
-# -- Monitoring image
+    # -- Monitoring image
     repository: quay.io/lusitaniae/apache-exporter
-# -- Monitoring tag
+    # -- Monitoring tag
     tag: latest
 
 # @schema
@@ -83,21 +85,18 @@ logging: json
 
 # Cert Manager config if used
 certManager:
-# -- Enabling cert-manager Certs creation
+  # -- Enabling cert-manager Certs creation
   enabled: true
-# Issuer Reference
+  # Issuer Reference
   issuerRef:
-# @schema
-# enum:
-# - Issuer
-# - ClusterIssuer
-# @schema
-# -- Kind of Issuer
+    # @schema
+    # enum:
+    # - Issuer
+    # - ClusterIssuer
+    # @schema
+    # -- Kind of Issuer
     kind: ClusterIssuer
-# @schema
-# default: ""
-# @schema
-# -- IssuerName
+    # -- IssuerName
     name: lab-ca-issuer 
 
 # TODO: extraConfigMaps to inject to http server

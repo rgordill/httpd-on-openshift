@@ -34,13 +34,16 @@
               "title": "kind"
             },
             "name": {
-              "default": "",
+              "default": "lab-ca-issuer",
               "description": "IssuerName",
               "required": [],
-              "title": "name"
+              "title": "name",
+              "type": "string"
             }
           },
-          "required": [],
+          "required": [
+            "name"
+          ],
           "title": "issuerRef",
           "type": "object"
         }
@@ -152,6 +155,7 @@
     },
     "monitor": {
       "additionalProperties": false,
+      "description": "Monitoring configuration for prometheus",
       "properties": {
         "enabled": {
           "default": true,
@@ -162,6 +166,7 @@
         },
         "image": {
           "additionalProperties": false,
+          "description": "Image config",
           "properties": {
             "repository": {
               "default": "quay.io/lusitaniae/apache-exporter",
@@ -206,6 +211,7 @@
       "properties": {
         "limits": {
           "additionalProperties": false,
+          "description": "Limits",
           "properties": {
             "cpu": {
               "default": 1,
