@@ -6,9 +6,12 @@ metadata:
     {{- include "httpd.selectorLabels" . | nindent 4 }}
   name: {{ include "httpd.fullname" . }}
 spec:
-  commonName: {{ include "httpd.fullname" . }}-{{ .Release.Namespace }}.{{ .Values.domain }}
+spec:
+  commonName: '{{ include "httpd.fullname" . | trunc 63 }}'
   dnsNames:
   - '{{ include "httpd.fullname" . }}.{{ .Release.Namespace }}.svc'
+  - '{{ include "httpd.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local'
+  - '{{ include "httpd.fullname" . }}-{{ .Release.Namespace }}.{{ .Values.domain }}'
   duration: 2160h0m0s
   issuerRef:
     {{- toYaml .Values.certManager.issuerRef | nindent 12 }}

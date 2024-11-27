@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "httpd.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default "default-httpd-name" (default .Chart.Name .Values.nameOverride) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -14,7 +14,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := default "default-httpd-name" (default .Chart.Name .Values.nameOverride) }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -36,10 +36,11 @@ Common labels
 {{- define "httpd.labels" -}}
 helm.sh/chart: {{ include "httpd.chart" . }}
 {{ include "httpd.selectorLabels" . }}
+app.kubernetes.io/name: {{ include "httpd.name" . | default "default-httpd-name" }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/managed-by: {{ .Release.Service | default "Helm" }}
 {{- end }}
 
 {{/*

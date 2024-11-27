@@ -6,7 +6,7 @@ metadata:
   annotations:
     "helm.sh/hook": test
   labels:
-    name: {{ .Values.database_service_name }}
+    {{- include "httpd.selectorLabels" . | nindent 4 }}
 spec:
   #serviceAccount: {{ .Values.serviceAccount }}
   containers:

@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-world-httpd
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: db-test
+    server: "https://kubernetes.default.svc"
+  source:
+    path: charts/httpd
+    repoURL: "https://github.com/dbgjerez/httpd-on-openshift.git"
+    targetRevision: 01-issue
+    helm:
+      valueFiles:
+      - 'values.yaml'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
