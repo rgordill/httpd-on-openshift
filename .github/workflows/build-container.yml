@@ -14,13 +14,9 @@ jobs:
       IMAGE_TAG: 2.24.0-${{ github.job }}
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-
-    - name: Install latest buildah
-      run: |
-        bash httpd-on-openshift/.github/install_latest_buildah.sh
-    
     - name: Buildah Action
       id: build_image_multiplatform
       uses: redhat-actions/buildah-build@v2
