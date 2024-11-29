@@ -16,6 +16,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+
+    - name: Install latest buildah
+      run: |
+        bash buildah-build/.github/install_latest_buildah.sh
+    
     - name: Buildah Action
       id: build_image_multiplatform
       uses: redhat-actions/buildah-build@v2
