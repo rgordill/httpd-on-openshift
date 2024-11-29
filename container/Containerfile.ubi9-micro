@@ -70,10 +70,10 @@ ENV HTTPD_SERVER_ROOT_PATH=/opt/httpd \
 
 WORKDIR ${HOME}
 
-COPY /etc/conf ${HTTPD_MAIN_CONF_PATH}
-COPY /etc/conf.d ${HTTPD_MAIN_CONF_D_PATH}
-COPY /runtime-scripts ${HTTPD_PREINIT_SCRIPTS_PATH}
-COPY /bin /opt/httpd/bin/
+COPY etc/conf ${HTTPD_MAIN_CONF_PATH}
+COPY etc/conf.d ${HTTPD_MAIN_CONF_D_PATH}
+COPY runtime-scripts ${HTTPD_PREINIT_SCRIPTS_PATH}
+COPY bin /opt/httpd/bin/
 
 # Now, we run commands to do the hardening without including them in the final image
 RUN --mount=type=bind,rw,source=build-scripts,target=/scripts,relabel=shared \
