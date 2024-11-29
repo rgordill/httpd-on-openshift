@@ -25,7 +25,7 @@ jobs:
         image: '${{ env.IMAGE_NAME }}'
         tags: '${{ env.IMAGE_TAG }}' 
         containerfiles: |
-          Containerfile.ubi9-micro
+          container/Containerfile.ubi9-micro
 
     - name: Echo Outputs
       run: |
