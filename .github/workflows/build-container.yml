@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       IMAGE_NAME: quay.io/rgordill/httpd-micro
-      IMAGE_TAG: 2.24.0-${{ github.job }}
+      IMAGE_TAG: 2.24.0-${{ github.run_attempt }}
 
     steps:
     - name: Checkout
@@ -21,7 +21,7 @@ jobs:
       id: build_image_multiplatform
       uses: redhat-actions/buildah-build@v2
       with:
-        platforms: linux/amd64
+        platforms: linux/amd64, linux/arm64
         context: container
         image: '${{ env.IMAGE_NAME }}'
         tags: '${{ env.IMAGE_TAG }}' 
