@@ -17,6 +17,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Update
+      run: |
+        find . -type f
+
     - name: Buildah Action
       id: build_image_multiplatform
       uses: redhat-actions/buildah-build@v2
