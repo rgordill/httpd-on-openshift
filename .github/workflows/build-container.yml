@@ -21,7 +21,7 @@ jobs:
       id: build_image_multiplatform
       uses: redhat-actions/buildah-build@v2
       with:
-        platforms: linux/amd64
+        arch: amd64, arm64
         context: container
         image: '${{ env.IMAGE_NAME }}'
         tags: '${{ env.IMAGE_TAG }}' 
