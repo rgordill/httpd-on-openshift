@@ -7,6 +7,6 @@ annotations:
   charts.openshift.io/provider: Community
   charts.openshift.io/providerType: Community
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 sources:
   - https://github.com/rgordill/httpd-on-openshift/charts/httpd

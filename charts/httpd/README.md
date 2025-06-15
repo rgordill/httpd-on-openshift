@@ -25,7 +25,7 @@ Kubernetes: `>=1.20.0`
 | git.branch | string | `"master"` | Git branch with content |
 | git.url | string | `"https://github.com/sclorg/httpd-ex.git"` | Git URL with content |
 | image.repository | string | `"quay.io/rgordill/httpd-micro"` | Repository for Apache http server |
-| image.tag | string | `"2.24-0"` | Tag for Apache http server |
+| image.tag | string | `"2.24-1"` | Tag for Apache http server |
 | ingress.enabled | bool | `true` | Expose http outside the cluster |
 | logging | string | `"json"` | Logging format |
 | monitor.enabled | bool | `true` | Monitoring enabled |

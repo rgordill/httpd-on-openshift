@@ -1,11 +1,14 @@
 # vim: set ft=yaml:
 # yaml-language-server: $schema=values.schema.json
 
+# Deployed on Openshift?
+openshift: true
+
 image:
   # -- Repository for Apache http server
   repository: quay.io/rgordill/httpd-micro
   # -- Tag for Apache http server
-  tag: "2.24-0"
+  tag: "2.24-1"
 
 # @schema
 # required: false
@@ -50,6 +53,10 @@ replicas: 1
 ingress:
   # -- Expose http outside the cluster
   enabled: true
+  # -- Class of the ingress controller. Currently, only nginx is supported
+  classname: nginx
+  # -- If custom host is used: mandatory for non openshift deployments
+  host: ""
 
 # Repo with the content to serve
 git:

@@ -23,7 +23,7 @@ spec:
         - name: REPO_BRANCH
           value: {{ .Values.git.branch }}
         name: git-download
-        image: registry.redhat.io/ubi9/toolbox
+        image: registry.access.redhat.com/ubi9/toolbox
         # TODO: iterate through all the scripts in the configmap
         command: 
         - '/tmp/sync-scripts/90-sync-git.sh'

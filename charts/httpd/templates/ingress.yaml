@@ -1,0 +1,34 @@
+{{- if and .Values.ingress.enabled (not .Values.openshift) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "httpd.fullname" . }}
+  labels:
+    {{- include "httpd.selectorLabels" . | nindent 4 }}
+  {{- if and (eq .Values.ingress.classname "nginx") .Values.certManager.enabled }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  {{- end }}
+spec:
+  {{- if eq .Values.ingress.classname "nginx" }}
+  ingressClassName: nginx
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "httpd.fullname" . }}
+                port:
+                  name: web
+  {{- if .Values.certManager.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
+{{- end }}

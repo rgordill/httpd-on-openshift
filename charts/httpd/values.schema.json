@@ -111,7 +111,7 @@
           "type": "string"
         },
         "tag": {
-          "default": "2.24-0",
+          "default": "2.24-1",
           "description": "Tag for Apache http server",
           "required": [],
           "title": "tag",
@@ -129,16 +129,32 @@
       "additionalProperties": false,
       "description": "Ingress to expose the server",
       "properties": {
+        "classname": {
+          "default": "nginx",
+          "description": "Class of the ingress controller. Currently, only nginx is supported",
+          "required": [],
+          "title": "classname",
+          "type": "string"
+        },
         "enabled": {
           "default": true,
           "description": "Expose http outside the cluster",
           "required": [],
           "title": "enabled",
           "type": "boolean"
+        },
+        "host": {
+          "default": "",
+          "description": "If custom host is used: mandatory for non openshift deployments",
+          "required": [],
+          "title": "host",
+          "type": "string"
         }
       },
       "required": [
-        "enabled"
+        "enabled",
+        "classname",
+        "host"
       ],
       "title": "ingress",
       "type": "object"
@@ -197,6 +213,13 @@
       ],
       "title": "monitor",
       "type": "object"
+    },
+    "openshift": {
+      "default": true,
+      "description": "Deployed on Openshift?",
+      "required": [],
+      "title": "openshift",
+      "type": "boolean"
     },
     "replicas": {
       "default": 1,
@@ -315,6 +338,7 @@
     }
   },
   "required": [
+    "openshift",
     "image",
     "storage",
     "service",

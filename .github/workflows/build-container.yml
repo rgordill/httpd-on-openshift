@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - container/**
+      - .github/workflows/build-container.yaml
   
 jobs:
   build:
@@ -11,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       IMAGE_NAME: httpd-micro
-      IMAGE_TAG: 2.24.0-${{ github.run_attempt }}
+      IMAGE_TAG: 2.24.1-${{ github.run_number }}
 
     steps:
     - name: Install qemu dependency
@@ -29,7 +30,7 @@ jobs:
         platforms: linux/amd64, linux/arm64
         context: container
         image: '${{ env.IMAGE_NAME }}'
-        tags: '${{ env.IMAGE_TAG }}' 
+        tags: latest '${{ env.IMAGE_TAG }}'
         containerfiles: |
           container/Containerfile.ubi9-micro
 
