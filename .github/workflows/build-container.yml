@@ -68,13 +68,16 @@ jobs:
 
     - name: Create a tarball of the image to upload to release
       run: |
-        buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} oci-archive:$(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
+        TAR_NAME=$(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
+        buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} oci-archive:$TAR_NAME
+        ls -l $TAR_NAME
+        echo "TAR_NAME=$TAR_NAME" >> $GITHUB_ENV
 
     - name: Upload image tarball
       uses: actions/upload-artifact@v4
       with:
         name: image-tarball-${{ matrix.arch }}
-        path: $(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
+        path: ${{ env.TAR_NAME }}
 
   create_manifest:
     name: Create manifest
@@ -98,9 +101,11 @@ jobs:
     - name: Create manifest and add images
       run: |
         set -x
+        TAR_PREFIX=$(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}
+
         buildah manifest create ${IMAGE_NAME}:${IMAGE_TAG}
-        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:$(basename ${IMAGE_NAME})-${IMAGE_TAG}-amd64.tar
-        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:$(basename ${IMAGE_NAME})-${IMAGE_TAG}-arm64.tar
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${TAR_PREFIX}-amd64.tar
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${TAR_PREFIX}-arm64.tar
 
     - name: Push To quay.io
       id: push-to-quay
