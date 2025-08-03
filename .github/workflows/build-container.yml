@@ -15,6 +15,7 @@ jobs:
     outputs:
       IMAGE_TAG: ${{ steps.get_latest_tag.outputs.IMAGE_TAG }}
     env:
+      IMAGE_NAME: quay.io/rgordill/httpd-micro
       IMAGE_VERSION: "2.4.63"
     steps:
     - name: Query latest image tag suffix
@@ -30,8 +31,9 @@ jobs:
         else
           NEXT=1
         fi
-        echo "IMAGE_TAG=${IMAGE_VERSION}-$NEXT" >> $GITHUB_ENV
-        echo "Using tag: ${IMAGE_VERSION}-$NEXT"
+        IMAGE_TAG="${IMAGE_VERSION}-$NEXT"
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+        echo "Using tag: $IMAGE_TAG"
 
   build_arch:
     name: Build ${{ matrix.arch }} image
