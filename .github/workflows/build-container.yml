@@ -68,18 +68,18 @@ jobs:
 
     - name: Create a tarball of the image to upload to release
       run: |
-        buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} oci-archive:${{ env.IMAGE_NAME }}-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
+        buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} oci-archive:$(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
 
     - name: Upload image tarball
       uses: actions/upload-artifact@v4
       with:
         name: image-tarball-${{ matrix.arch }}
-        path: oci-archive:${{ env.IMAGE_NAME }}-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
+        path: $(basename ${{ env.IMAGE_NAME }})-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
 
   create_manifest:
     name: Create manifest
     runs-on: ubuntu-24.04
-    needs: build_arch
+    needs: [set_context, build_arch]
     env:
       IMAGE_TAG: ${{ needs.set_context.outputs.IMAGE_TAG }}
     steps:
@@ -87,18 +87,20 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: image-tarball-amd64
+        path: .
 
     - name: Download arm64 image tarball
       uses: actions/download-artifact@v4
       with:
         name: image-tarball-arm64
+        path: .
 
     - name: Create manifest and add images
       run: |
         set -x
         buildah manifest create ${IMAGE_NAME}:${IMAGE_TAG}
-        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${IMAGE_NAME}-${IMAGE_TAG}-amd64.tar
-        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${IMAGE_NAME}-${IMAGE_TAG}-arm64.tar
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:$(basename ${IMAGE_NAME})-${IMAGE_TAG}-amd64.tar
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:$(basename ${IMAGE_NAME})-${IMAGE_TAG}-arm64.tar
 
     - name: Push To quay.io
       id: push-to-quay
