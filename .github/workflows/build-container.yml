@@ -107,15 +107,25 @@ jobs:
         buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${TAR_PREFIX}-amd64.tar
         buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${TAR_PREFIX}-arm64.tar
 
+    - name: List manifest
+      run: |
+        buildah manifest inspect ${IMAGE_NAME}:${IMAGE_TAG}
+
     - name: Push To quay.io
       id: push-to-quay
+      run: |
+        IMAGE="${IMAGE_NAME#quay.io/}"
+        echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Push manifest to quay.io
       uses: redhat-actions/push-to-registry@v2
       with:
-        image: ${{ env.IMAGE_NAME }}
+        image: ${{ env.IMAGE }}
         tags: ${{ env.IMAGE_TAG }}
-        registry: quay.io/rgordill
+        registry: quay.io
         username: rgordill+github_actions
         password: ${{ secrets.REGISTRY_ROBOT_TOKEN }}
 
     - name: Print image url
-      run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
+      run: echo "Image pushed to quay.io/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}"
