@@ -5,6 +5,8 @@ on:
     paths:
       - container/**
       - .github/workflows/build-container.yaml
+env:
+  IMAGE_NAME: quay.io/rgordill/httpd-micro
   
 jobs:
   set_context:
@@ -13,7 +15,6 @@ jobs:
     outputs:
       IMAGE_TAG: ${{ steps.get_latest_tag.outputs.IMAGE_TAG }}
     env:
-      IMAGE_NAME: quay.io/rgordill/httpd-micro
       IMAGE_VERSION: "2.4.63"
     steps:
     - name: Query latest image tag suffix
@@ -40,15 +41,14 @@ jobs:
         arch: [amd64, arm64]
     runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     env:
-      IMAGE_NAME: ${{ needs.set_context.outputs.IMAGE_NAME }}
       IMAGE_TAG: ${{ needs.set_context.outputs.IMAGE_TAG }}
       PLATFORM: linux/${{ matrix.arch }}
 
     steps:
-    # - name: Install qemu dependency
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install -y qemu-user-static
+    - name: Debug env variables
+      run: |
+        echo "IMAGE_TAG: ${{ env.IMAGE_TAG }}"
+        echo "IMAGE_NAME: ${{ env.IMAGE_NAME }}"
 
     - name: Checkout
       uses: actions/checkout@v4
@@ -59,6 +59,7 @@ jobs:
       with:
         platforms: ${{ env.PLATFORM }}
         context: container
+        image: ${{ env.IMAGE_NAME }}
         tags: ${{ env.IMAGE_TAG }}
         containerfiles: |
           container/Containerfile.ubi10-micro
@@ -78,7 +79,6 @@ jobs:
     runs-on: ubuntu-24.04
     needs: build_arch
     env:
-      IMAGE_NAME: ${{ needs.set_context.outputs.IMAGE_NAME }}
       IMAGE_TAG: ${{ needs.set_context.outputs.IMAGE_TAG }}
     steps:
     - name: Download amd64 image tarball
