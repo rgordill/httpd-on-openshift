@@ -7,53 +7,103 @@ on:
       - .github/workflows/build-container.yaml
   
 jobs:
-  build:
-    name: Build image
+  set_context:
+    name: Set context
     runs-on: ubuntu-24.04
+    outputs:
+      IMAGE_TAG: ${{ steps.get_latest_tag.outputs.IMAGE_TAG }}
     env:
-      IMAGE_NAME: httpd-micro
-      IMAGE_TAG: 2.24.1-${{ github.run_number }}
+      IMAGE_NAME: quay.io/rgordill/httpd-micro
+      IMAGE_VERSION: "2.4.63"
+    steps:
+    - name: Query latest image tag suffix
+      id: get_latest_tag
+      run: |
+        set -e
+        TAGS=$(curl -s "https://quay.io/api/v1/repository/${IMAGE_NAME#quay.io/}/tag/?onlyActiveTags=true" | jq -r '.tags[].name')
+        PREFIX="${IMAGE_VERSION}-"
+        SUFFIXES=$(echo "$TAGS" | grep "^${PREFIX}[0-9]\+$" | sed "s/^${PREFIX}//" | sort -n)
+        if [ -n "$SUFFIXES" ]; then
+          LATEST=$(echo "$SUFFIXES" | tail -n1)
+          NEXT=$((LATEST + 1))
+        else
+          NEXT=1
+        fi
+        echo "IMAGE_TAG=${IMAGE_VERSION}-$NEXT" >> $GITHUB_ENV
+        echo "Using tag: ${IMAGE_VERSION}-$NEXT"
+
+  build_arch:
+    name: Build ${{ matrix.arch }} image
+    needs: set_context
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
+    env:
+      IMAGE_NAME: ${{ needs.set_context.outputs.IMAGE_NAME }}
+      IMAGE_TAG: ${{ needs.set_context.outputs.IMAGE_TAG }}
+      PLATFORM: linux/${{ matrix.arch }}
 
     steps:
-    - name: Install qemu dependency
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y qemu-user-static
+    # - name: Install qemu dependency
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y qemu-user-static
 
     - name: Checkout
       uses: actions/checkout@v4
 
     - name: Buildah Action
-      id: build_image_multiplatform
+      id: build_image
       uses: redhat-actions/buildah-build@v2
       with:
-        platforms: linux/amd64, linux/arm64
+        platforms: ${{ env.PLATFORM }}
         context: container
-        image: ${{ env.IMAGE_NAME }}
-        tags: latest ${{ env.IMAGE_TAG }}
+        tags: ${{ env.IMAGE_TAG }}
         containerfiles: |
           container/Containerfile.ubi10-micro
 
-    - name: Echo Outputs
+    - name: Create a tarball of the image to upload to release
       run: |
-        echo "Image: ${{ steps.build_image_multiplatform.outputs.image }}"
-        echo "Tags: ${{ steps.build_image_multiplatform.outputs.tags }}"
-        echo "Tagged Image: ${{ steps.build_image_multiplatform.outputs.image-with-tag }}"
+        buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} oci-archive:${{ env.IMAGE_NAME }}-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
 
-    - name: Check images created
-      run: buildah images | grep '${{ env.IMAGE_NAME }}'
+    - name: Upload image tarball
+      uses: actions/upload-artifact@v4
+      with:
+        name: image-tarball-${{ matrix.arch }}
+        path: oci-archive:${{ env.IMAGE_NAME }}-${{ env.IMAGE_TAG }}-${{ matrix.arch }}.tar
 
-    - name: Check manifest
+  create_manifest:
+    name: Create manifest
+    runs-on: ubuntu-24.04
+    needs: build_arch
+    env:
+      IMAGE_NAME: ${{ needs.set_context.outputs.IMAGE_NAME }}
+      IMAGE_TAG: ${{ needs.set_context.outputs.IMAGE_TAG }}
+    steps:
+    - name: Download amd64 image tarball
+      uses: actions/download-artifact@v4
+      with:
+        name: image-tarball-amd64
+
+    - name: Download arm64 image tarball
+      uses: actions/download-artifact@v4
+      with:
+        name: image-tarball-arm64
+
+    - name: Create manifest and add images
       run: |
         set -x
-        buildah manifest inspect ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        buildah manifest create ${IMAGE_NAME}:${IMAGE_TAG}
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${IMAGE_NAME}-${IMAGE_TAG}-amd64.tar
+        buildah manifest add ${IMAGE_NAME}:${IMAGE_TAG} oci-archive:${IMAGE_NAME}-${IMAGE_TAG}-arm64.tar
 
     - name: Push To quay.io
       id: push-to-quay
       uses: redhat-actions/push-to-registry@v2
       with:
-        image: ${{ steps.build_image_multiplatform.outputs.image }}
-        tags: ${{ steps.build_image_multiplatform.outputs.tags }}
+        image: ${{ env.IMAGE_NAME }}
+        tags: ${{ env.IMAGE_TAG }}
         registry: quay.io/rgordill
         username: rgordill+github_actions
         password: ${{ secrets.REGISTRY_ROBOT_TOKEN }}
